@@ -20,6 +20,7 @@ import br.com.morador.dto.AtualizaMoradorDto;
 import br.com.morador.dto.AtualizaProcessoCadastroDto;
 import br.com.morador.dto.CabecalhoResponsePublisherDto;
 import br.com.morador.dto.GETMoradorResponseDto;
+import br.com.morador.dto.GETMoradorSemResidenciasResponseDto;
 import br.com.morador.dto.GETMoradoresResponseDto;
 import br.com.morador.dto.GETMoradoresSemResidenciaResponseDto;
 import br.com.morador.dto.MoradorDto;
@@ -70,7 +71,10 @@ public class MoradorService {
 	private Validators<ProcessoCadastroDto, AtualizaProcessoCadastroDto> validarProcesso;
 	
 	@Autowired
-	private Converter<GETMoradoresSemResidenciaResponseDto, List<Morador>> converter;
+	private Converter<List<GETMoradorSemResidenciasResponseDto>, List<Morador>> converter;
+	
+	@Autowired
+	private Converter<GETMoradoresSemResidenciaResponseDto, List<Morador>> converterMorador;
 	
 	public ResponsePublisherDto salvar(MoradorDto moradorRequestBody) throws RegistroException {
 		
@@ -147,13 +151,21 @@ public class MoradorService {
 		
 	}
 
-	public GETMoradoresSemResidenciaResponseDto buscar(Long residenciaId) {
+	public Response<GETMoradoresSemResidenciaResponseDto> buscar(Long residenciaId) {
 		
 		log.info("Buscando morador(es) por residencia id {}", residenciaId); 
 		
+		Response<GETMoradoresSemResidenciaResponseDto> response = new Response<GETMoradoresSemResidenciaResponseDto>();
+		
 		List<String> ids = vinculoRepository.findByResidenciaId(residenciaId).stream().map(m -> m.getMorador().getId().toString()).collect(Collectors.toList());
 		
-		return this.converter.convert(this.moradorRepository.findMoradoresById(ids));
+		GETMoradoresSemResidenciaResponseDto moradores = new GETMoradoresSemResidenciaResponseDto();
+		
+		moradores.setMoradores(this.converter.convert(this.moradorRepository.findMoradoresById(ids)));
+		
+		response.setData(moradores);
+		
+		return response;
 	}
 
 	public Page<?> buscar(MoradorFilter filtros, Pageable pageable) throws IllegalArgumentException, IllegalAccessException, ClassNotFoundException {
@@ -198,7 +210,7 @@ public class MoradorService {
 		
 		List<String> ids = vinculoRepository.findByResidenciaId(filter.getResidenciaId()).stream().map(m -> m.getMorador().getId().toString()).collect(Collectors.toList());
 		
-		return Optional.ofNullable(this.converter.convert(this.moradorRepository.findMoradoresById(ids)));
+		return Optional.ofNullable(this.converterMorador.convert(this.moradorRepository.findMoradoresById(ids)));
 	}
 	
 	public String gerarGuide() {

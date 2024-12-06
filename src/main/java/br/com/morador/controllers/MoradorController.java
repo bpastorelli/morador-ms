@@ -29,6 +29,7 @@ import br.com.morador.dto.ResponsePublisherDto;
 import br.com.morador.errorheadling.RegistroException;
 import br.com.morador.errorheadling.RegistroExceptionHandler;
 import br.com.morador.filter.MoradorFilter;
+import br.com.morador.response.Response;
 import br.com.morador.services.MoradorService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -127,9 +128,9 @@ public class MoradorController extends RegistroExceptionHandler {
 	public ResponseEntity<?> buscarMoradoresPorResidencia(
 			@RequestParam(value = "residenciaId", defaultValue = "0") Long residenciaId) throws NoSuchAlgorithmException {
 		
-		GETMoradoresSemResidenciaResponseDto moradores = this.moradorService.buscar(residenciaId);
+		Response<GETMoradoresSemResidenciaResponseDto> moradores = this.moradorService.buscar(residenciaId);
 		
-		return new ResponseEntity<>(moradores.getMoradores(), HttpStatus.OK);
+		return new ResponseEntity<>(moradores.getData(), HttpStatus.OK);
 		
 	}
 

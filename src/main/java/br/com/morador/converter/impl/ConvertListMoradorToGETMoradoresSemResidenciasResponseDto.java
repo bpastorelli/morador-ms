@@ -8,17 +8,18 @@ import org.springframework.stereotype.Component;
 
 import br.com.morador.converter.Converter;
 import br.com.morador.dto.GETMoradorSemResidenciasResponseDto;
+import br.com.morador.dto.GETMoradoresSemResidenciaResponseDto;
 import br.com.morador.entities.Morador;
 import br.com.morador.mappers.MoradorMapper;
 
 @Component
-public class ConvertListMoradorToGETListMoradoresSemResidenciasResponseDto implements Converter<List<GETMoradorSemResidenciasResponseDto>, List<Morador>> {
+public class ConvertListMoradorToGETMoradoresSemResidenciasResponseDto implements Converter<GETMoradoresSemResidenciaResponseDto, List<Morador>> {
 
 	@Autowired
 	private MoradorMapper moradorMapper;
 	
 	@Override
-	public List<GETMoradorSemResidenciasResponseDto> convert(List<Morador> moradores) {
+	public GETMoradoresSemResidenciaResponseDto convert(List<Morador> moradores) {
 
 		List<GETMoradorSemResidenciasResponseDto> moradoresSemResidencias = new ArrayList<GETMoradorSemResidenciasResponseDto>();
 		
@@ -28,7 +29,11 @@ public class ConvertListMoradorToGETListMoradoresSemResidenciasResponseDto imple
 			moradoresSemResidencias.add(morador);
 		});
 		
-		return moradoresSemResidencias;
+		GETMoradoresSemResidenciaResponseDto moradoresResponse = new GETMoradoresSemResidenciaResponseDto();
+		
+		moradoresResponse.setMoradores(moradoresSemResidencias);
+		
+		return moradoresResponse;
 		
 	}
 
