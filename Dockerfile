@@ -7,4 +7,4 @@ RUN addgroup -S spring && adduser -S spring -G spring
 MAINTAINER Bruno Pastorelli
 COPY target/morador-ms.jar morador-ms.jar
 ENTRYPOINT ["java","-jar","/morador-ms.jar"]
-EXPOSE 9090
+EXPOSE 9094
