@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import br.com.morador.amqp.producer.impl.MoradorProducer;
 import br.com.morador.amqp.producer.impl.ProcessoCadastroMoradorProducer;
+import br.com.morador.controllers.GETMoradoresSemResidenciaResponseDto;
 import br.com.morador.converter.Converter;
 import br.com.morador.dto.AtualizaMoradorDto;
 import br.com.morador.dto.AtualizaProcessoCadastroDto;
@@ -69,7 +70,7 @@ public class MoradorService {
 	private Validators<ProcessoCadastroDto, AtualizaProcessoCadastroDto> validarProcesso;
 	
 	@Autowired
-	private Converter<GETMoradoresResponseDto, List<Morador>> converter;
+	private Converter<GETMoradoresSemResidenciaResponseDto, List<Morador>> converter;
 	
 	public ResponsePublisherDto salvar(MoradorDto moradorRequestBody) throws RegistroException {
 		
@@ -146,15 +147,13 @@ public class MoradorService {
 		
 	}
 
-	public GETMoradoresResponseDto buscar(Long residenciaId) {
-		
-		MoradorFilter filter = MoradorFilter.builder()
-				.residenciaId(residenciaId)
-				.build();
+	public GETMoradoresSemResidenciaResponseDto buscar(Long residenciaId) {
 		
 		log.info("Buscando morador(es) por residencia id {}", residenciaId); 
 		
-		return this.converter.convert(this.moradorRepository.findMoradorBy(filter));
+		List<String> ids = vinculoRepository.findByResidenciaId(residenciaId).stream().map(m -> m.getMorador().getId().toString()).collect(Collectors.toList());
+		
+		return this.converter.convert(this.moradorRepository.findMoradoresById(ids));
 	}
 
 	public Page<?> buscar(MoradorFilter filtros, Pageable pageable) throws IllegalArgumentException, IllegalAccessException, ClassNotFoundException {
@@ -193,11 +192,13 @@ public class MoradorService {
 		return new PageImpl<>(response.getData().getMoradores(), pageable, total);
 	}
 
-	public Optional<GETMoradoresResponseDto> buscar(MoradorFilter filter) {
+	public Optional<GETMoradoresSemResidenciaResponseDto> buscar(MoradorFilter filter) {
 		
-		log.info("Buscando morador(es)..."); 
+		log.info("Buscando morador(es)...");
 		
-		return Optional.ofNullable(this.converter.convert(this.moradorRepository.findMoradorBy(filter)));
+		List<String> ids = vinculoRepository.findByResidenciaId(filter.getResidenciaId()).stream().map(m -> m.getMorador().getId().toString()).collect(Collectors.toList());
+		
+		return Optional.ofNullable(this.converter.convert(this.moradorRepository.findMoradoresById(ids)));
 	}
 	
 	public String gerarGuide() {

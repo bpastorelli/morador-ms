@@ -42,6 +42,12 @@ public interface MoradorRepository extends JpaRepository<Morador, Long> {
 	Page<Morador> findByPosicao(Long posicao, Pageable pageable);
 	
 	
+	@Query(value = "select *"
+			+ " from morador m"
+			+ " where (m.id IN (:#{#ids})) "
+			, nativeQuery = true)
+	public List<Morador> findMoradoresById(@Param("ids") List<String> ids);
+	
 	@Query(value = "select * "
 			+ " from morador m "
 			+ " inner join vinculo_residencia v"
@@ -53,10 +59,6 @@ public interface MoradorRepository extends JpaRepository<Morador, Long> {
 	
 	@Query(value = "select * "
 			+ " from morador m "
-			+ " inner join vinculo_residencia v"
-			+ " on v.morador_id = m.id"
-			+ " inner join residencia r"
-			+ " on v.residencia_id = r.id"
 			+ " where (m.id = :#{#filter.id} OR :#{#filter.id} IS NULL) "
 			+ " and (m.nome like %:#{#filter.nome}% OR :#{#filter.nome} IS NULL) "
 			+ " and (m.cpf = :#{#filter.cpf} OR :#{#filter.cpf} IS NULL) "

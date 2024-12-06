@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.morador.dto.AtualizaMoradorDto;
-import br.com.morador.dto.GETMoradoresResponseDto;
 import br.com.morador.dto.MoradorDto;
 import br.com.morador.dto.ProcessoCadastroDto;
 import br.com.morador.dto.ResponsePublisherDto;
@@ -127,7 +126,7 @@ public class MoradorController extends RegistroExceptionHandler {
 	public ResponseEntity<?> buscarMoradoresPorResidencia(
 			@RequestParam(value = "residenciaId", defaultValue = "0") Long residenciaId) throws NoSuchAlgorithmException {
 		
-		GETMoradoresResponseDto moradores = this.moradorService.buscar(residenciaId);
+		GETMoradoresSemResidenciaResponseDto moradores = this.moradorService.buscar(residenciaId);
 		
 		return new ResponseEntity<>(moradores.getMoradores(), HttpStatus.OK);
 		
