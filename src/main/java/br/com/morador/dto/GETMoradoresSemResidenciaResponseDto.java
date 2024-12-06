@@ -1,4 +1,4 @@
-package br.com.morador.controllers;
+package br.com.morador.dto;
 
 import java.io.Serializable;
 import java.util.List;

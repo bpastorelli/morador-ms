@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.morador.dto.AtualizaMoradorDto;
+import br.com.morador.dto.GETMoradoresSemResidenciaResponseDto;
 import br.com.morador.dto.MoradorDto;
 import br.com.morador.dto.ProcessoCadastroDto;
 import br.com.morador.dto.ResponsePublisherDto;

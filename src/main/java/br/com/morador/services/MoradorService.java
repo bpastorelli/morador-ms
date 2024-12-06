@@ -15,13 +15,13 @@ import org.springframework.stereotype.Service;
 
 import br.com.morador.amqp.producer.impl.MoradorProducer;
 import br.com.morador.amqp.producer.impl.ProcessoCadastroMoradorProducer;
-import br.com.morador.controllers.GETMoradoresSemResidenciaResponseDto;
 import br.com.morador.converter.Converter;
 import br.com.morador.dto.AtualizaMoradorDto;
 import br.com.morador.dto.AtualizaProcessoCadastroDto;
 import br.com.morador.dto.CabecalhoResponsePublisherDto;
 import br.com.morador.dto.GETMoradorResponseDto;
 import br.com.morador.dto.GETMoradoresResponseDto;
+import br.com.morador.dto.GETMoradoresSemResidenciaResponseDto;
 import br.com.morador.dto.MoradorDto;
 import br.com.morador.dto.ProcessoCadastroDto;
 import br.com.morador.dto.QueryResidenciaResponseDto;

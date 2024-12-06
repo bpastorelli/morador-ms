@@ -6,9 +6,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import br.com.morador.controllers.GETMoradoresSemResidenciaResponseDto;
 import br.com.morador.converter.Converter;
 import br.com.morador.dto.GETMoradorSemResidenciasResponseDto;
+import br.com.morador.dto.GETMoradoresSemResidenciaResponseDto;
 import br.com.morador.entities.Morador;
 import br.com.morador.mappers.MoradorMapper;
 
