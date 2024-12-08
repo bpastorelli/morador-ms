@@ -151,7 +151,7 @@ public class MoradorService {
 		
 	}
 
-	public Response<GETMoradoresSemResidenciaResponseDto> buscar(Long residenciaId) {
+	public Response<GETMoradoresSemResidenciaResponseDto> buscarPorResidencia(Long residenciaId) {
 		
 		log.info("Buscando morador(es) por residencia id {}", residenciaId); 
 		
@@ -162,6 +162,21 @@ public class MoradorService {
 		GETMoradoresSemResidenciaResponseDto moradores = new GETMoradoresSemResidenciaResponseDto();
 		
 		moradores.setMoradores(this.converter.convert(this.moradorRepository.findMoradoresById(ids)));
+		
+		response.setData(moradores);
+		
+		return response;
+	}
+	
+	public Response<GETMoradoresSemResidenciaResponseDto> buscarPorFiltros(MoradorFilter filter) {
+		
+		log.info("Buscando morador(es) por filtros..."); 
+		
+		Response<GETMoradoresSemResidenciaResponseDto> response = new Response<GETMoradoresSemResidenciaResponseDto>();
+				
+		GETMoradoresSemResidenciaResponseDto moradores = new GETMoradoresSemResidenciaResponseDto();
+		
+		moradores.setMoradores(this.converter.convert(this.moradorRepository.findMoradorBy(filter)));
 		
 		response.setData(moradores);
 		

@@ -128,11 +128,21 @@ public class MoradorController extends RegistroExceptionHandler {
 	public ResponseEntity<?> buscarMoradoresPorResidencia(
 			@RequestParam(value = "residenciaId", defaultValue = "0") Long residenciaId) throws NoSuchAlgorithmException {
 		
-		Response<GETMoradoresSemResidenciaResponseDto> moradores = this.moradorService.buscar(residenciaId);
+		Response<GETMoradoresSemResidenciaResponseDto> moradores = this.moradorService.buscarPorResidencia(residenciaId);
 		
 		return new ResponseEntity<>(moradores.getData(), HttpStatus.OK);
 		
 	}
 
+	@ApiOperation(value = "Pesquisa moradores com retorno sem paginacao.")
+	@GetMapping(value = "/query")
+	public ResponseEntity<?> buscarMoradores(
+			MoradorFilter filters) throws NoSuchAlgorithmException {
+		
+		Response<GETMoradoresSemResidenciaResponseDto> moradores = this.moradorService.buscarPorFiltros(filters);
+		
+		return new ResponseEntity<>(moradores.getData(), HttpStatus.OK);
+		
+	}
 	
 }
