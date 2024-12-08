@@ -10,7 +10,9 @@ import org.springframework.web.client.RestTemplate;
 import br.com.morador.dto.QueryResidenciaResponseDto;
 import br.com.morador.dto.ResidenciaRequestDto;
 import br.com.morador.utils.RestTemplateUtil;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 public class ResidenciaSender {
 	
@@ -21,6 +23,8 @@ public class ResidenciaSender {
 	private RestTemplate restTemplate;
 	
 	public QueryResidenciaResponseDto buscarResidencias(ResidenciaRequestDto request) throws IllegalArgumentException, IllegalAccessException, ClassNotFoundException{
+		
+		log.info("Consultando residencias no endpoint: {}", URL);
 		
 		RestTemplateUtil rest = RestTemplateUtil.builder()
 				.URL(URL)
