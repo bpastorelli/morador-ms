@@ -15,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class MoradorProducer extends KafkaTemplateAbstract<MoradorDto> {
 	
-	@Value("${residencia.topic.name}")
+	@Value("${morador.topic.name}")
 	private String topic;
 	
 	public void producer(@Payload MoradorDto dto) {
