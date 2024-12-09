@@ -23,11 +23,11 @@ import br.com.morador.dto.GETMoradorResponseDto;
 import br.com.morador.dto.GETMoradorSemResidenciasResponseDto;
 import br.com.morador.dto.GETMoradoresResponseDto;
 import br.com.morador.dto.GETMoradoresSemResidenciaResponseDto;
+import br.com.morador.dto.GETVinculoMoradorResidenciaResponseDto;
 import br.com.morador.dto.MoradorDto;
 import br.com.morador.dto.ProcessoCadastroDto;
-import br.com.morador.dto.QueryResidenciaResponseDto;
-import br.com.morador.dto.ResidenciaRequestDto;
 import br.com.morador.dto.ResponsePublisherDto;
+import br.com.morador.dto.VinculoResidenciaRequestDto;
 import br.com.morador.entities.Morador;
 import br.com.morador.errorheadling.RegistroException;
 import br.com.morador.filter.MoradorFilter;
@@ -35,7 +35,7 @@ import br.com.morador.mappers.MoradorMapper;
 import br.com.morador.repositories.MoradorRepository;
 import br.com.morador.repositories.VinculoResidenciaRepository;
 import br.com.morador.response.Response;
-import br.com.morador.senders.ResidenciaSender;
+import br.com.morador.senders.VinculosSender;
 import br.com.morador.validators.Validators;
 import lombok.extern.slf4j.Slf4j;
 
@@ -62,7 +62,7 @@ public class MoradorService {
 	private VinculoResidenciaRepository vinculoRepository;
 	
 	@Autowired
-	private ResidenciaSender residenciaSender;
+	private VinculosSender vinculosSender;
 	
 	@Autowired
 	private Validators<MoradorDto, AtualizaMoradorDto> validar;
@@ -198,15 +198,13 @@ public class MoradorService {
 			
 			GETMoradorResponseDto moradorResponse = moradorMapper.moradorToGETMoradorResponseDto(morador);
 			
-			List<String> ids = vinculoRepository.findByMoradorId(morador.getId()).stream().map(m -> m.getResidencia().getId().toString()).collect(Collectors.toList());
-			
-			ResidenciaRequestDto request = ResidenciaRequestDto.builder()
-					.ids(ids)
+			VinculoResidenciaRequestDto request = VinculoResidenciaRequestDto.builder()
+					.moradorId(morador.getId())
 					.build();
 			
-			QueryResidenciaResponseDto residencias = residenciaSender.buscarResidencias(request);
+			GETVinculoMoradorResidenciaResponseDto vinculos = this.vinculosSender.buscarResidencias(request);
 			
-			moradorResponse.setResidencias(residencias.getResidencias());
+			moradorResponse.setResidencias(vinculos.getMorador().getResidencias());
 			listMoradores.add(moradorResponse);
 		}
 		
