@@ -1,5 +1,7 @@
 package br.com.morador.dto;
 
+import java.io.Serializable;
+
 import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
@@ -13,12 +15,12 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProcessoCadastroDto {
+public class ProcessoCadastroDto implements Serializable {
 	
+	private static final long serialVersionUID = 1L;
+
 	@JsonUnwrapped
 	private MoradorDto morador;
-	
-	private ResidenciaDto residencia;
 	
 	@Transient
 	private String guide;

@@ -30,19 +30,19 @@ public class ValidarProcessoCadastro implements Validators<ProcessoCadastroDto, 
 		List<MoradorDto> moradores = new ArrayList<MoradorDto>();
 		moradores.add(t.getMorador());
 		
-		if(t.getResidencia().getEndereco().isBlank() || t.getResidencia().getEndereco().isEmpty())
+		if(t.getMorador().getResidencia().getEndereco().isBlank() || t.getMorador().getResidencia().getEndereco().isEmpty())
 			errors.getErros().add(new ErroRegistro("", TITULO, " Campo endereço é obrigatório!")); 
 		
-		if(t.getResidencia().getNumero() == 0L || t.getResidencia().getNumero() == null)
+		if(t.getMorador().getResidencia().getNumero() == 0L || t.getMorador().getResidencia().getNumero() == null)
 			errors.getErros().add(new ErroRegistro("", TITULO, " Campo número é obrigatório!")); 
 		
-		if(t.getResidencia().getCep().isBlank() || t.getResidencia().getCep().isEmpty())
+		if(t.getMorador().getResidencia().getCep().isBlank() || t.getMorador().getResidencia().getCep().isEmpty())
 			errors.getErros().add(new ErroRegistro("", TITULO, " Campo CEP é obrigatório!"));
 		
-		if(t.getResidencia().getCidade().isBlank() || t.getResidencia().getCidade().isEmpty())
+		if(t.getMorador().getResidencia().getCidade().isBlank() || t.getMorador().getResidencia().getCidade().isEmpty())
 			errors.getErros().add(new ErroRegistro("", TITULO, " Campo Cidade é obrigatório!"));
 		
-		if(t.getResidencia().getUf().isBlank() || t.getResidencia().getUf().isEmpty())
+		if(t.getMorador().getResidencia().getUf().isBlank() || t.getMorador().getResidencia().getUf().isEmpty())
 			errors.getErros().add(new ErroRegistro("", TITULO, " Campo UF é obrigatório!"));
 		
 		this.validarMorador.validarPost(t.getMorador());

@@ -2,8 +2,6 @@ package br.com.morador.dto;
 
 import java.io.Serializable;
 
-import javax.persistence.Transient;
-
 import br.com.morador.enums.PerfilEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -40,7 +38,8 @@ public class MoradorDto implements Serializable {
 	
 	private Long posicao;
 	
-	@Transient
 	private String guide;
+	
+	private ResidenciaDto residencia;
 
 }

@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import br.com.morador.amqp.producer.impl.MoradorProducer;
 import br.com.morador.amqp.producer.impl.ProcessoCadastroMoradorProducer;
+import br.com.morador.amqp.producer.impl.VinculosProducer;
 import br.com.morador.converter.Converter;
 import br.com.morador.dto.AtualizaMoradorDto;
 import br.com.morador.dto.AtualizaProcessoCadastroDto;
@@ -48,6 +49,9 @@ public class MoradorService {
 	
 	@Autowired
 	private MoradorProducer producer;
+	
+	@Autowired
+	private VinculosProducer vinculoProducer;
 	
 	@Autowired
 	private ProcessoCadastroMoradorProducer processoProducer;
@@ -134,10 +138,14 @@ public class MoradorService {
 		
 		this.validarProcesso.validarPost(processoRequestBody);
 		
+		processoRequestBody.getMorador().setGuide(processoRequestBody.getGuide());
+		processoRequestBody.getMorador().getResidencia().setGuide(processoRequestBody.getGuide());
+		
 		//Envia para a fila de Morador
 		log.info("Enviando mensagem " +  processoRequestBody.toString() + " para o consumer.");
 		
 		this.processoProducer.producerAsync(processoRequestBody);
+		this.vinculoProducer.producerAsync(processoRequestBody);
 		
 		ResponsePublisherDto response = ResponsePublisherDto
 				.builder()

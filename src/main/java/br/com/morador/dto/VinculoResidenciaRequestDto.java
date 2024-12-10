@@ -13,9 +13,9 @@ import lombok.Setter;
 @NoArgsConstructor
 public class VinculoResidenciaRequestDto {
 	
-	public Long residenciaId;
-	
 	public Long moradorId;
+	
+	public Long residenciaId;
 	
 	public String guide;
 
