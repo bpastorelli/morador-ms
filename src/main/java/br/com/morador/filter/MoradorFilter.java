@@ -32,6 +32,8 @@ public class MoradorFilter implements Serializable {
 	
 	private Long residenciaId;
 	
+	private Boolean detalhaResidencia;
+	
 	private boolean content;
 
 }

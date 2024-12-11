@@ -2,18 +2,14 @@ package br.com.morador.entities;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
@@ -81,12 +77,6 @@ public class Morador implements Serializable {
 	
 	@Column(name = "POSICAO", nullable = false)
 	private Long posicao;
-	
-	@OneToMany(mappedBy = "morador", fetch = FetchType.LAZY, cascade = CascadeType.ALL)	
-	private List<VinculoResidencia> residencias;
-	
-	@OneToMany(mappedBy = "morador", fetch = FetchType.LAZY, cascade = CascadeType.ALL)	
-	private List<Lancamento> lancamentos;
 	
 	@PreUpdate
     public void preUpdate() {

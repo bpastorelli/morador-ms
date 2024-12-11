@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import br.com.morador.dto.GETVinculoMoradorResidenciaResponseDto;
+import br.com.morador.dto.GETVinculoResidenciaMoradorResponseDto;
 import br.com.morador.dto.VinculoResidenciaRequestDto;
 import br.com.morador.utils.RestTemplateUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +23,7 @@ public class VinculosSender {
 	@Autowired
 	private RestTemplate restTemplate;
 	
-	public GETVinculoMoradorResidenciaResponseDto buscarResidencias(VinculoResidenciaRequestDto request) throws IllegalArgumentException, IllegalAccessException, ClassNotFoundException{
+	public GETVinculoMoradorResidenciaResponseDto buscarResidenciasPorMorador(VinculoResidenciaRequestDto request) throws IllegalArgumentException, IllegalAccessException, ClassNotFoundException{
 		
 		log.info("Consultando residencias no endpoint: {}", URL);
 		
@@ -35,6 +36,22 @@ public class VinculosSender {
 				.build();
 		
 		return (GETVinculoMoradorResidenciaResponseDto) rest.execute(GETVinculoMoradorResidenciaResponseDto.class);
+		
+	}
+	
+	public GETVinculoResidenciaMoradorResponseDto buscarMoradoresPorResidencia(VinculoResidenciaRequestDto request) throws IllegalArgumentException, IllegalAccessException, ClassNotFoundException{
+		
+		log.info("Consultando moradores no endpoint: {}", URL);
+		
+		RestTemplateUtil rest = RestTemplateUtil.builder()
+				.URL(URL)
+				.mediaType(MediaType.APPLICATION_JSON)
+				.method(HttpMethod.GET)
+				.restTemplate(restTemplate)
+				.params(request)
+				.build();
+		
+		return (GETVinculoResidenciaMoradorResponseDto) rest.execute(GETVinculoResidenciaMoradorResponseDto.class);
 		
 	}
 

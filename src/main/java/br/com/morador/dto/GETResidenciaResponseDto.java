@@ -30,7 +30,7 @@ public class GETResidenciaResponseDto implements Comparable<GETResidenciaRespons
 	private String uf;
 	
 	@JsonUnwrapped
-	private QueryResidenciaResponseDto moradores;
+	private GETMoradoresResponseDto moradores;
 
 	private String guide;
 

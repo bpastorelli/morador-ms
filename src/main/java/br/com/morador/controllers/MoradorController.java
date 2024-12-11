@@ -1,6 +1,8 @@
 package br.com.morador.controllers;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -123,6 +125,19 @@ public class MoradorController extends RegistroExceptionHandler {
 		
 	}
 	
+	@ApiOperation(value = "Pesquisa moradores a partir dos ids informados.")
+	@GetMapping(value = "/buscar")
+	public ResponseEntity<?> buscarResidencias(
+			@RequestParam(name="ids", required=true) List<String> ids) throws NoSuchAlgorithmException, IllegalArgumentException, IllegalAccessException, ClassNotFoundException {
+		
+		List<String> idsReplace = this.tratarArray(ids);
+		
+		Response<GETMoradoresSemResidenciaResponseDto> moradores = this.moradorService.buscarPorIds(idsReplace);
+		
+		return new ResponseEntity<>(moradores.getData(), HttpStatus.OK);
+		
+	}
+	
 	@ApiOperation(value = "Pesquisa moradores a partir do id da residência.")
 	@GetMapping(value = "/residencia")
 	public ResponseEntity<?> buscarMoradoresPorResidencia(
@@ -143,6 +158,17 @@ public class MoradorController extends RegistroExceptionHandler {
 		
 		return new ResponseEntity<>(moradores.getData(), HttpStatus.OK);
 		
+	}
+	
+	private List<String> tratarArray(List<String> ids){
+		
+		List<String> idsReplace = new ArrayList<>();
+		
+		for(String id : ids) {
+			idsReplace.add(id.replace("[", "").replace("]", ""));
+		}
+		
+		return idsReplace;
 	}
 	
 }

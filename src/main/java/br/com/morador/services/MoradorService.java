@@ -25,6 +25,7 @@ import br.com.morador.dto.GETMoradorSemResidenciasResponseDto;
 import br.com.morador.dto.GETMoradoresResponseDto;
 import br.com.morador.dto.GETMoradoresSemResidenciaResponseDto;
 import br.com.morador.dto.GETVinculoMoradorResidenciaResponseDto;
+import br.com.morador.dto.GETVinculoResidenciaMoradorResponseDto;
 import br.com.morador.dto.MoradorDto;
 import br.com.morador.dto.ProcessoCadastroDto;
 import br.com.morador.dto.ResponsePublisherDto;
@@ -34,7 +35,6 @@ import br.com.morador.errorheadling.RegistroException;
 import br.com.morador.filter.MoradorFilter;
 import br.com.morador.mappers.MoradorMapper;
 import br.com.morador.repositories.MoradorRepository;
-import br.com.morador.repositories.VinculoResidenciaRepository;
 import br.com.morador.response.Response;
 import br.com.morador.senders.VinculosSender;
 import br.com.morador.validators.Validators;
@@ -61,9 +61,6 @@ public class MoradorService {
 	
 	@Autowired
 	private MoradorRepository moradorRepository;
-	
-	@Autowired
-	private VinculoResidenciaRepository vinculoRepository;
 	
 	@Autowired
 	private VinculosSender vinculosSender;
@@ -138,9 +135,6 @@ public class MoradorService {
 		
 		this.validarProcesso.validarPost(processoRequestBody);
 		
-		processoRequestBody.getMorador().setGuide(processoRequestBody.getGuide());
-		processoRequestBody.getMorador().getResidencia().setGuide(processoRequestBody.getGuide());
-		
 		//Envia para a fila de Morador
 		log.info("Enviando mensagem " +  processoRequestBody.toString() + " para o consumer.");
 		
@@ -165,7 +159,8 @@ public class MoradorService {
 		
 		Response<GETMoradoresSemResidenciaResponseDto> response = new Response<GETMoradoresSemResidenciaResponseDto>();
 		
-		List<String> ids = vinculoRepository.findByResidenciaId(residenciaId).stream().map(m -> m.getMorador().getId().toString()).collect(Collectors.toList());
+		//List<String> ids = vinculoRepository.findByResidenciaId(residenciaId).stream().map(m -> m.getMorador().getId().toString()).collect(Collectors.toList());
+		List<String> ids = new ArrayList<>();
 		
 		GETMoradoresSemResidenciaResponseDto moradores = new GETMoradoresSemResidenciaResponseDto();
 		
@@ -202,17 +197,22 @@ public class MoradorService {
 		
 		long total = this.moradorRepository.totalRegistros(filtros);
 		
-		for (Morador morador : moradores) {
+		GETMoradorResponseDto moradorResponse = null;
+		for (Morador morador : moradores) {			
+			moradorResponse = moradorMapper.moradorToGETMoradorResponseDto(morador);
+			if (filtros.getDetalhaResidencia().equals(Boolean.TRUE)) {
+				
+				VinculoResidenciaRequestDto request = VinculoResidenciaRequestDto.builder()
+						.moradorId(morador.getId())
+						.build();
+				
+				GETVinculoMoradorResidenciaResponseDto vinculos = this.vinculosSender.buscarResidenciasPorMorador(request);
+				
+				moradorResponse.setResidencias(vinculos.getMorador().getResidencias());
+			} else {
+				moradorResponse.setResidencias(null);
+			}
 			
-			GETMoradorResponseDto moradorResponse = moradorMapper.moradorToGETMoradorResponseDto(morador);
-			
-			VinculoResidenciaRequestDto request = VinculoResidenciaRequestDto.builder()
-					.moradorId(morador.getId())
-					.build();
-			
-			GETVinculoMoradorResidenciaResponseDto vinculos = this.vinculosSender.buscarResidencias(request);
-			
-			moradorResponse.setResidencias(vinculos.getMorador().getResidencias());
 			listMoradores.add(moradorResponse);
 		}
 		
@@ -225,13 +225,44 @@ public class MoradorService {
 		return new PageImpl<>(response.getData().getMoradores(), pageable, total);
 	}
 
-	public Optional<GETMoradoresSemResidenciaResponseDto> buscar(MoradorFilter filter) {
+	public Optional<GETMoradoresSemResidenciaResponseDto> buscar(MoradorFilter filter) throws IllegalArgumentException, IllegalAccessException, ClassNotFoundException {
 		
 		log.info("Buscando morador(es)...");
 		
-		List<String> ids = vinculoRepository.findByResidenciaId(filter.getResidenciaId()).stream().map(m -> m.getMorador().getId().toString()).collect(Collectors.toList());
+		VinculoResidenciaRequestDto request = VinculoResidenciaRequestDto.builder()
+				.residenciaId(filter.getResidenciaId())
+				.build();
+		
+		GETVinculoResidenciaMoradorResponseDto vinculos = this.vinculosSender.buscarMoradoresPorResidencia(request);
+		
+		List<String> ids = vinculos.getResidencia().getMoradores().moradores.stream().map(m -> m.getId().toString()).collect(Collectors.toList());
 		
 		return Optional.ofNullable(this.converterMorador.convert(this.moradorRepository.findMoradoresById(ids)));
+	}
+	
+	public Response<GETMoradoresSemResidenciaResponseDto> buscarPorIds(List<String> ids){
+		
+		log.info("Buscando residencia(s)...");
+		
+		List<GETMoradorSemResidenciasResponseDto> listaMoradores = new ArrayList<>();
+		
+		Response<GETMoradoresSemResidenciaResponseDto> response = new Response<GETMoradoresSemResidenciaResponseDto>();
+		
+		List<Morador> moradores = this.moradorRepository.findMoradoresById(ids);
+		
+		for (Morador morador : moradores) {			
+			GETMoradorSemResidenciasResponseDto moradorResponse = moradorMapper.moradorToGETMoradorSemResidenciasResponseDto(morador);
+			listaMoradores.add(moradorResponse);
+		}
+		
+		GETMoradoresSemResidenciaResponseDto queryMoradores = new GETMoradoresSemResidenciaResponseDto();
+		
+		queryMoradores.setMoradores(listaMoradores);
+		
+		response.setData(queryMoradores);
+		
+		return response;
+		
 	}
 	
 	public String gerarGuide() {
