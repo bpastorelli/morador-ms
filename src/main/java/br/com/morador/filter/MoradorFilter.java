@@ -2,6 +2,8 @@ package br.com.morador.filter;
 
 import java.io.Serializable;
 
+import javax.persistence.PrePersist;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,9 +13,7 @@ import lombok.Setter;
 @Setter
 public class MoradorFilter implements Serializable {
 	
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
@@ -35,5 +35,10 @@ public class MoradorFilter implements Serializable {
 	private Boolean detalhaResidencia;
 	
 	private boolean content;
+	
+    @PrePersist
+    public void prePersist() {
+    	this.detalhaResidencia = Boolean.FALSE;
+    }
 
 }
