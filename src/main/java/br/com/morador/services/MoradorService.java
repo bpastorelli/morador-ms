@@ -196,6 +196,9 @@ public class MoradorService {
 		
 		log.info("Buscando morador(es)...");
 		
+		if (filtros.getDetalhaResidencia() == null)
+			filtros.setDetalhaResidencia(Boolean.FALSE);
+		
 		Response<GETMoradoresResponseDto> response = new Response<GETMoradoresResponseDto>(); 
 		List<GETMoradorResponseDto> listMoradores = new ArrayList<>();
 		
