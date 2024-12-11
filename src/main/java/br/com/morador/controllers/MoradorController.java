@@ -141,7 +141,7 @@ public class MoradorController extends RegistroExceptionHandler {
 	@ApiOperation(value = "Pesquisa moradores a partir do id da residência.")
 	@GetMapping(value = "/residencia")
 	public ResponseEntity<?> buscarMoradoresPorResidencia(
-			@RequestParam(value = "residenciaId", defaultValue = "0") Long residenciaId) throws NoSuchAlgorithmException {
+			@RequestParam(value = "residenciaId", defaultValue = "0") Long residenciaId) throws NoSuchAlgorithmException, IllegalArgumentException, IllegalAccessException, ClassNotFoundException {
 		
 		Response<GETMoradoresSemResidenciaResponseDto> moradores = this.moradorService.buscarPorResidencia(residenciaId);
 		

@@ -2,13 +2,15 @@ package br.com.morador.dto;
 
 import java.io.Serializable;
 
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class GETVinculoResidenciaMoradorResponseDto implements Serializable {
 
 	private static final long serialVersionUID = 1L;

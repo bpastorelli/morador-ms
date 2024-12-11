@@ -153,17 +153,23 @@ public class MoradorService {
 		
 	}
 
-	public Response<GETMoradoresSemResidenciaResponseDto> buscarPorResidencia(Long residenciaId) {
+	public Response<GETMoradoresSemResidenciaResponseDto> buscarPorResidencia(Long residenciaId) throws IllegalArgumentException, IllegalAccessException, ClassNotFoundException {
 		
 		log.info("Buscando morador(es) por residencia id {}", residenciaId); 
 		
 		Response<GETMoradoresSemResidenciaResponseDto> response = new Response<GETMoradoresSemResidenciaResponseDto>();
 		
-		//List<String> ids = vinculoRepository.findByResidenciaId(residenciaId).stream().map(m -> m.getMorador().getId().toString()).collect(Collectors.toList());
 		List<String> ids = new ArrayList<>();
+		
+		VinculoResidenciaRequestDto request = VinculoResidenciaRequestDto.builder()
+				.residenciaId(residenciaId)
+				.build();
+		
+		GETVinculoResidenciaMoradorResponseDto vinculos = this.vinculosSender.buscarMoradoresPorResidencia(request);
 		
 		GETMoradoresSemResidenciaResponseDto moradores = new GETMoradoresSemResidenciaResponseDto();
 		
+		ids = vinculos.getResidencia().getMoradores().moradores.stream().map(m -> m.getId().toString()).collect(Collectors.toList());
 		moradores.setMoradores(this.converter.convert(this.moradorRepository.findMoradoresById(ids)));
 		
 		response.setData(moradores);
