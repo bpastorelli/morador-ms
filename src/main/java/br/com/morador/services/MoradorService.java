@@ -92,7 +92,8 @@ public class MoradorService {
 		this.producer.producerAsync(moradorRequestBody);
 		
 		VinculoRequestDto requestVinculo = VinculoRequestDto.builder()
-				.residenciaId(moradorRequestBody.getResidenciaId())
+				.cpfMorador(moradorRequestBody.getCpf())
+				.residenciaId(moradorRequestBody.getResidenciaId().toString())
 				.build();
 		this.vinculoProducer.producerAsync(requestVinculo);
 		
@@ -147,6 +148,7 @@ public class MoradorService {
 		this.processoProducer.producerAsync(processoRequestBody);
 		
 		VinculoRequestDto requestVinculo = VinculoRequestDto.builder()
+				.cpfMorador(processoRequestBody.getMorador().getCpf())
 				.cepResidencia(processoRequestBody.getMorador().getResidencia().getCep())
 				.numeroResidencia(processoRequestBody.getMorador().getResidencia().getNumero())
 				.complementoResidencia(processoRequestBody.getMorador().getResidencia().getComplemento())
