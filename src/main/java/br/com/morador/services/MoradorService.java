@@ -29,6 +29,7 @@ import br.com.morador.dto.GETVinculoResidenciaMoradorResponseDto;
 import br.com.morador.dto.MoradorDto;
 import br.com.morador.dto.ProcessoCadastroDto;
 import br.com.morador.dto.ResponsePublisherDto;
+import br.com.morador.dto.VinculoRequestDto;
 import br.com.morador.dto.VinculoResidenciaRequestDto;
 import br.com.morador.entities.Morador;
 import br.com.morador.errorheadling.RegistroException;
@@ -49,7 +50,7 @@ public class MoradorService {
 	
 	@Autowired
 	private MoradorProducer producer;
-	
+
 	@Autowired
 	private VinculosProducer vinculoProducer;
 	
@@ -89,6 +90,11 @@ public class MoradorService {
 		log.info("Enviando mensagem " +  moradorRequestBody.toString() + " para o consumer.");
 		
 		this.producer.producerAsync(moradorRequestBody);
+		
+		VinculoRequestDto requestVinculo = VinculoRequestDto.builder()
+				.residenciaId(moradorRequestBody.getResidenciaId())
+				.build();
+		this.vinculoProducer.producerAsync(requestVinculo);
 		
 		ResponsePublisherDto response = ResponsePublisherDto
 				.builder()
@@ -139,7 +145,13 @@ public class MoradorService {
 		log.info("Enviando mensagem " +  processoRequestBody.toString() + " para o consumer.");
 		
 		this.processoProducer.producerAsync(processoRequestBody);
-		this.vinculoProducer.producerAsync(processoRequestBody);
+		
+		VinculoRequestDto requestVinculo = VinculoRequestDto.builder()
+				.cepResidencia(processoRequestBody.getMorador().getResidencia().getCep())
+				.numeroResidencia(processoRequestBody.getMorador().getResidencia().getNumero())
+				.complementoResidencia(processoRequestBody.getMorador().getResidencia().getComplemento())
+				.build();
+		this.vinculoProducer.producerAsync(requestVinculo);
 		
 		ResponsePublisherDto response = ResponsePublisherDto
 				.builder()

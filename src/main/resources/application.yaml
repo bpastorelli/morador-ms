@@ -26,10 +26,6 @@ vinculo:
   topic:
     name: vinculo-mq
     
-vinculo2:
-  topic:
-    name: vinculo-processo-mq
-    
 contribuicao:
   topic:
     name: contribuicao-mq

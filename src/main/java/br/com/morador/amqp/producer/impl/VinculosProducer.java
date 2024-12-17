@@ -8,17 +8,17 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
 import br.com.morador.amqp.producer.KafkaTemplateAbstract;
-import br.com.morador.dto.ProcessoCadastroDto;
+import br.com.morador.dto.VinculoRequestDto;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
-public class VinculosProducer extends KafkaTemplateAbstract<ProcessoCadastroDto> {
+public class VinculosProducer extends KafkaTemplateAbstract<VinculoRequestDto> {
 	
-	@Value("${vinculo2.topic.name}")
+	@Value("${vinculo.topic.name}")
 	private String topic;
 	
-	public void producer(@Payload ProcessoCadastroDto dto) {
+	public void producer(@Payload VinculoRequestDto dto) {
 		
 		kafkaTemplate.send(topic, dto).addCallback(
 				success -> log.info("Mensagem publicada: {}", success.getProducerRecord().value()),
@@ -28,12 +28,12 @@ public class VinculosProducer extends KafkaTemplateAbstract<ProcessoCadastroDto>
 	}
 
 	@Async("asyncKafka")
-	public void producerAsync(@Payload ProcessoCadastroDto dto) {
+	public void producerAsync(@Payload VinculoRequestDto dto) {
 		
 		Runnable runnable = () -> kafkaTemplate.send(topic, dto).addCallback(new ListenableFutureCallback<>() {
 
 			@Override
-			public void onSuccess(SendResult<String, ProcessoCadastroDto> result) {
+			public void onSuccess(SendResult<String, VinculoRequestDto> result) {
 				
 				log.info("Mensagem publicada: {}", result.getProducerRecord().value());
 				
