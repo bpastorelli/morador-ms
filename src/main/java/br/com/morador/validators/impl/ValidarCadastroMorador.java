@@ -86,13 +86,6 @@ public class ValidarCadastroMorador implements Validators<MoradorDto, AtualizaMo
 				.ifPresent(res -> errors.getErros().add(new ErroRegistro("", TITULO, " E-mail '" + morador.getEmail() + "' já existe")));	
 		});
 		
-		/*t.forEach(morador -> {
-			if(morador.getResidenciaId() != null && morador.getResidenciaId() != 0) {
-				if (!this.residenciaRepository.findById(morador.getResidenciaId()).isPresent())
-					errors.getErros().add(new ErroRegistro("", TITULO, " A residencia de código '" + morador.getResidenciaId() + "' não existe"));				
-			}
-		});*/
-		
 		//Valida se o CPF não está duplicado na requisição.
 		t.forEach(morador -> {
 			if(t
@@ -150,12 +143,6 @@ public class ValidarCadastroMorador implements Validators<MoradorDto, AtualizaMo
 				
 		morador.setPerfil(moradorSource.get().getPerfil());
 		morador.setGuide(moradorSource.get().getGuide());
-	
-
-		/*if(morador.getResidenciaId() != null && morador.getResidenciaId() != 0) {
-			if (!this.residenciaRepository.findById(morador.getResidenciaId()).isPresent())
-				errors.getErros().add(new ErroRegistro("", TITULO, " A residencia de código '" + morador.getResidenciaId() + "' não existe"));				
-		}*/
 
 		if(!errors.getErros().isEmpty())
 			throw errors;
@@ -201,12 +188,7 @@ public class ValidarCadastroMorador implements Validators<MoradorDto, AtualizaMo
 			.ifPresent(res -> errors.getErros().add(new ErroRegistro("", TITULO, " RG '" + morador.getRg() + "' já existe")));	
 		
 		this.moradorRepository.findByEmail(morador.getEmail())
-			.ifPresent(res -> errors.getErros().add(new ErroRegistro("", TITULO, " E-mail '" + morador.getEmail() + "' já existe")));	
-		
-		/*if(morador.getResidenciaId() != null && morador.getResidenciaId() != 0) {
-			if (!this.residenciaRepository.findById(morador.getResidenciaId()).isPresent())
-					errors.getErros().add(new ErroRegistro("", TITULO, " A residencia de código '" + morador.getResidenciaId() + "' não existe"));				
-		}*/
+			.ifPresent(res -> errors.getErros().add(new ErroRegistro("", TITULO, " E-mail '" + morador.getEmail() + "' já existe")));
 		
 		if(!errors.getErros().isEmpty())
 			throw errors;

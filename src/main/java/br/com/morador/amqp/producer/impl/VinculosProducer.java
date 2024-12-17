@@ -15,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class VinculosProducer extends KafkaTemplateAbstract<ProcessoCadastroDto> {
 	
-	@Value("${vinculo.topic.name}")
+	@Value("${vinculo2.topic.name}")
 	private String topic;
 	
 	public void producer(@Payload ProcessoCadastroDto dto) {
