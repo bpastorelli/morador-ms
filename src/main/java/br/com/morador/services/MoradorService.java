@@ -82,7 +82,7 @@ public class MoradorService {
 		
 		log.info("Cadastrando um morador: {}", moradorRequestBody.toString());
 		
-		moradorRequestBody.setGuide(this.gerarGuide()); 	
+		moradorRequestBody.setGuide(UUID.randomUUID().toString()); 	
 		
 		this.validar.validarPost(moradorRequestBody);
 		
@@ -91,11 +91,13 @@ public class MoradorService {
 		
 		this.producer.producerAsync(moradorRequestBody);
 		
-		VinculoRequestDto requestVinculo = VinculoRequestDto.builder()
-				.cpfMorador(moradorRequestBody.getCpf())
-				.residenciaId(moradorRequestBody.getResidenciaId().toString())
-				.build();
-		this.vinculoProducer.producerAsync(requestVinculo);
+		if (moradorRequestBody.getResidenciaId().compareTo(0L) != 0){
+			VinculoRequestDto requestVinculo = VinculoRequestDto.builder()
+					.cpfMorador(moradorRequestBody.getCpf())
+					.residenciaId(moradorRequestBody.getResidenciaId().toString())
+					.build();
+			this.vinculoProducer.producerAsync(requestVinculo);
+		}
 		
 		ResponsePublisherDto response = ResponsePublisherDto
 				.builder()
@@ -113,7 +115,7 @@ public class MoradorService {
 
 		log.info("Atualizando um morador: {}", moradorRequestBody.toString());
 		
-		moradorRequestBody.setGuide(this.gerarGuide()); 	
+		moradorRequestBody.setGuide(UUID.randomUUID().toString()); 	
 		
 		this.validar.validarPut(moradorRequestBody, id);
 		
@@ -138,7 +140,7 @@ public class MoradorService {
 		
 		log.info("Cadastrando um morador: {}", processoRequestBody.toString());
 		
-		processoRequestBody.setGuide(this.gerarGuide());
+		processoRequestBody.setGuide(UUID.randomUUID().toString());
 		
 		this.validarProcesso.validarPost(processoRequestBody);
 		
@@ -285,28 +287,6 @@ public class MoradorService {
 		response.setData(queryMoradores);
 		
 		return response;
-		
-	}
-	
-	public String gerarGuide() {
-
-		String guide = null;
-		int i = 0;
-		boolean ticketValido = false;
-		
-		do {
-			i++;
-			if(this.moradorRepository.findByGuide(guide).isPresent())
-				guide = UUID.randomUUID().toString();
-			else if(guide == null)
-				guide = UUID.randomUUID().toString();
-			else {
-				ticketValido = true;
-			}
-			
-		}while(!ticketValido && i < guideLimit);
-		
-		return guide;
 		
 	}
 	
