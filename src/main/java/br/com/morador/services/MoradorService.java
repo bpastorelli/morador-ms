@@ -7,7 +7,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -44,9 +43,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class MoradorService {
-	
-	@Value("${guide.limit}")
-	private int guideLimit;
 	
 	@Autowired
 	private MoradorProducer producer;
