@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +26,7 @@ import br.com.morador.dto.GETMoradoresSemResidenciaResponseDto;
 import br.com.morador.dto.GETVinculoMoradorResidenciaResponseDto;
 import br.com.morador.dto.GETVinculoResidenciaMoradorResponseDto;
 import br.com.morador.dto.MoradorDto;
+import br.com.morador.dto.PaginacaoDto;
 import br.com.morador.dto.ProcessoCadastroDto;
 import br.com.morador.dto.ResponsePublisherDto;
 import br.com.morador.dto.VinculoRequestDto;
@@ -204,19 +205,21 @@ public class MoradorService {
 		return response;
 	}
 
-	public Page<?> buscar(MoradorFilter filtros, Pageable pageable) throws IllegalArgumentException, IllegalAccessException, ClassNotFoundException {
+	public GETMoradoresResponseDto buscar(MoradorFilter filtros, Pageable pageable) throws IllegalArgumentException, IllegalAccessException, ClassNotFoundException {
 		
 		log.info("Buscando morador(es)...");
 		
 		if (filtros.getDetalhaResidencia() == null)
 			filtros.setDetalhaResidencia(Boolean.FALSE);
 		
-		Response<GETMoradoresResponseDto> response = new Response<GETMoradoresResponseDto>(); 
+		Response<GETMoradoresResponseDto> response = new Response<GETMoradoresResponseDto>();
+		
+		PageRequest moradorRequest = PageRequest.of(pageable.getPageNumber() == 0 ? 0 : (pageable.getPageNumber() > 0 ? pageable.getPageNumber() - 1 : 0), pageable.getPageSize());
+
+		
 		List<GETMoradorResponseDto> listMoradores = new ArrayList<>();
 		
-		List<Morador> moradores = this.moradorRepository.findMoradorBy(filtros, pageable);
-		
-		long total = this.moradorRepository.totalRegistros(filtros);
+		Page<Morador> moradores = this.moradorRepository.findMoradorBy(filtros, moradorRequest);
 		
 		GETMoradorResponseDto moradorResponse = null;
 		for (Morador morador : moradores) {			
@@ -237,13 +240,24 @@ public class MoradorService {
 			listMoradores.add(moradorResponse);
 		}
 		
+		int page = moradores.getNumber() == 0 ? 1 : (moradores.getNumber() >= 1 ? moradores.getNumber()+1 : 1);
+		
+		PaginacaoDto paginacao = PaginacaoDto.builder()
+				.pagina(page)
+				.paginaAnterior(page == 1 ? 1 : page-1)
+				.proximaPagina(page < moradores.getTotalPages() ? page+1 : moradores.getTotalPages())
+				.totalPaginas(moradores.getTotalPages())
+				.totalItems(moradores.getTotalElements())
+				.build();
+		
 		GETMoradoresResponseDto moradoresResponse = GETMoradoresResponseDto.builder()
 				.moradores(listMoradores)
+				.paginacao(paginacao)
 				.build();
 		
 		response.setData(moradoresResponse);
 		
-		return new PageImpl<>(response.getData().getMoradores(), pageable, total);
+		return moradoresResponse;
 	}
 
 	public Optional<GETMoradoresSemResidenciaResponseDto> buscar(MoradorFilter filter) throws IllegalArgumentException, IllegalAccessException, ClassNotFoundException {

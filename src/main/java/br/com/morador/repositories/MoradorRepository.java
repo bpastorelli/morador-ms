@@ -78,18 +78,16 @@ public interface MoradorRepository extends JpaRepository<Morador, Long> {
 			+ " and (m.email = :#{#filter.email} OR :#{#filter.email} IS NULL) "
 			+ " and (m.posicao = :#{#filter.posicao} OR :#{#filter.posicao} IS NULL) "
 			+ " and (m.guide = :#{#filter.guide} OR :#{#filter.guide} IS NULL) "
+			+ "order by m.nome \n-- #paginacao\n",
+			countQuery = "select count(*) " 
+					+ " from morador m "
+					+ " where (m.id = :#{#filter.id} OR :#{#filter.id} IS NULL) "
+					+ " and (m.nome like %:#{#filter.nome}% OR :#{#filter.nome} IS NULL) "
+					+ " and (m.cpf = :#{#filter.cpf} OR :#{#filter.cpf} IS NULL) "
+					+ " and (m.rg = :#{#filter.rg} OR :#{#filter.rg} IS NULL) "
+					+ " and (m.email = :#{#filter.email} OR :#{#filter.email} IS NULL) "
+					+ " and (m.posicao = :#{#filter.posicao} OR :#{#filter.posicao} IS NULL)"
 			, nativeQuery = true)
-	public List<Morador> findMoradorBy(@Param("filter") MoradorFilter filter, Pageable pageable);
-	
-	@Query(value = "select count(*)"
-			+ " from morador m "
-			+ " where (m.id = :#{#filter.id} OR :#{#filter.id} IS NULL) "
-			+ " and (m.nome like %:#{#filter.nome}% OR :#{#filter.nome} IS NULL) "
-			+ " and (m.cpf = :#{#filter.cpf} OR :#{#filter.cpf} IS NULL) "
-			+ " and (m.rg = :#{#filter.rg} OR :#{#filter.rg} IS NULL) "
-			+ " and (m.email = :#{#filter.email} OR :#{#filter.email} IS NULL) "
-			+ " and (m.posicao = :#{#filter.posicao} OR :#{#filter.posicao} IS NULL)"
-			, nativeQuery = true)
-	public Long totalRegistros(@Param("filter") MoradorFilter filter);
+	public Page<Morador> findMoradorBy(@Param("filter") MoradorFilter filter, Pageable pageable);
 	
 }

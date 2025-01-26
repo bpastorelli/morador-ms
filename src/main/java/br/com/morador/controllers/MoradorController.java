@@ -7,7 +7,6 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
@@ -24,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.morador.dto.AtualizaMoradorDto;
+import br.com.morador.dto.GETMoradoresResponseDto;
 import br.com.morador.dto.GETMoradoresSemResidenciaResponseDto;
 import br.com.morador.dto.MoradorDto;
 import br.com.morador.dto.ProcessoCadastroDto;
@@ -118,9 +118,9 @@ public class MoradorController extends RegistroExceptionHandler {
 			MoradorFilter filters,
 			@PageableDefault(sort = "nome", direction = Direction.DESC, page = 0, size = 10) Pageable paginacao) throws NoSuchAlgorithmException, IllegalArgumentException, IllegalAccessException, ClassNotFoundException {
 		
-		Page<?> moradores = this.moradorService.buscar(filters, paginacao);
+		GETMoradoresResponseDto moradores = this.moradorService.buscar(filters, paginacao);
 		
-		return filters.isContent() ? new ResponseEntity<>(moradores.getContent(), HttpStatus.OK) :
+		return filters.isContent() ? new ResponseEntity<>(moradores, HttpStatus.OK) :
 					new ResponseEntity<>(moradores, HttpStatus.OK);
 		
 	}
