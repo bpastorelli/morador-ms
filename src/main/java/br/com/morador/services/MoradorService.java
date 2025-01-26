@@ -216,7 +216,6 @@ public class MoradorService {
 		
 		PageRequest moradorRequest = PageRequest.of(pageable.getPageNumber() == 0 ? 0 : (pageable.getPageNumber() > 0 ? pageable.getPageNumber() - 1 : 0), pageable.getPageSize());
 
-		
 		List<GETMoradorResponseDto> listMoradores = new ArrayList<>();
 		
 		Page<Morador> moradores = this.moradorRepository.findMoradorBy(filtros, moradorRequest);

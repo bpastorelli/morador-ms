@@ -120,7 +120,7 @@ public class MoradorController extends RegistroExceptionHandler {
 		
 		GETMoradoresResponseDto moradores = this.moradorService.buscar(filters, paginacao);
 		
-		return filters.isContent() ? new ResponseEntity<>(moradores, HttpStatus.OK) :
+		return filters.isContent() ? new ResponseEntity<>(moradores.getMoradores(), HttpStatus.OK) :
 					new ResponseEntity<>(moradores, HttpStatus.OK);
 		
 	}
