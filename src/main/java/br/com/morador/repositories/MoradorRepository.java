@@ -86,7 +86,8 @@ public interface MoradorRepository extends JpaRepository<Morador, Long> {
 					+ " and (m.cpf = :#{#filter.cpf} OR :#{#filter.cpf} IS NULL) "
 					+ " and (m.rg = :#{#filter.rg} OR :#{#filter.rg} IS NULL) "
 					+ " and (m.email = :#{#filter.email} OR :#{#filter.email} IS NULL) "
-					+ " and (m.posicao = :#{#filter.posicao} OR :#{#filter.posicao} IS NULL)"
+					+ " and (m.posicao = :#{#filter.posicao} OR :#{#filter.posicao} IS NULL) "
+					+ " and (m.guide = :#{#filter.guide} OR :#{#filter.guide} IS NULL) "
 			, nativeQuery = true)
 	public Page<Morador> findMoradorBy(@Param("filter") MoradorFilter filter, Pageable pageable);
 	
