@@ -40,7 +40,7 @@ public class GETMoradorResponseDto implements Comparable<GETMoradorResponseDto> 
 	private Long posicao;
 	
 	@JsonUnwrapped
-	private List<GETResidenciaResponseDto> residencias;
+	private List<GETResidenciaSemMoradoresResponseDto> residencias;
 	
 	private String guide;
 	
