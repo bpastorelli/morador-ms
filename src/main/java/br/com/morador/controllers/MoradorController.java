@@ -13,7 +13,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -41,7 +40,6 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @Api(tags = "Cadastro de Moradores")
 @RequestMapping("/sgc/morador")
-@CrossOrigin(origins = "*")
 public class MoradorController extends RegistroExceptionHandler {
 	
 	@Autowired
@@ -98,7 +96,7 @@ public class MoradorController extends RegistroExceptionHandler {
 	@PutMapping(value = "/amqp/alterar")
 	public ResponseEntity<?> alterarAMQP( 
 			@Valid @RequestBody AtualizaMoradorDto moradorRequestBody,
-			@RequestParam(value = "id", defaultValue = "null") Long id,
+			@RequestParam(defaultValue = "null") Long id,
 			BindingResult result) throws RegistroException{
 		
 		log.info("Enviando mensagem para o consumer...");
@@ -128,7 +126,7 @@ public class MoradorController extends RegistroExceptionHandler {
 	@ApiOperation(value = "Pesquisa moradores a partir dos ids informados.")
 	@GetMapping(value = "/buscar")
 	public ResponseEntity<?> buscarResidencias(
-			@RequestParam(name="ids", required=true) List<String> ids) throws NoSuchAlgorithmException, IllegalArgumentException, IllegalAccessException, ClassNotFoundException {
+			@RequestParam(required=true) List<String> ids) throws NoSuchAlgorithmException, IllegalArgumentException, IllegalAccessException, ClassNotFoundException {
 		
 		List<String> idsReplace = this.tratarArray(ids);
 		
@@ -141,7 +139,7 @@ public class MoradorController extends RegistroExceptionHandler {
 	@ApiOperation(value = "Pesquisa moradores a partir do id da residência.")
 	@GetMapping(value = "/residencia")
 	public ResponseEntity<?> buscarMoradoresPorResidencia(
-			@RequestParam(value = "residenciaId", defaultValue = "0") Long residenciaId) throws NoSuchAlgorithmException, IllegalArgumentException, IllegalAccessException, ClassNotFoundException {
+			@RequestParam(defaultValue = "0") Long residenciaId) throws NoSuchAlgorithmException, IllegalArgumentException, IllegalAccessException, ClassNotFoundException {
 		
 		Response<GETMoradoresSemResidenciaResponseDto> moradores = this.moradorService.buscarPorResidencia(residenciaId);
 		
